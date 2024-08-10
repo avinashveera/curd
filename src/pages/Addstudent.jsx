@@ -1,15 +1,25 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import StudentForm from '../component/StudentForm';
 
 const AddStudent = () => {
-  const navigate = useNavigate();
 
-  const handleSubmit = (student) => {
-    const students = JSON.parse(localStorage.getItem('students')) || [];
-    students.push(student);
-    localStorage.setItem('students', JSON.stringify(students));
-    navigate('/students');
+  const handleSubmit = ({ name, roll, clas }) => {
+   
+     fetch(`http://localhost:4000/create`,{
+        method:"POST",
+        headers:{
+          "content-Type":"application/json"
+        },
+        body:JSON.stringify({
+         name,
+         clas,
+         roll
+        })
+      })
+
+
+
+
   };
 
   return (

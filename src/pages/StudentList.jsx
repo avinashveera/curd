@@ -3,29 +3,62 @@ import React, { useState, useEffect } from 'react';
 const StudentList = () => {
   const [students, setStudents] = useState([]);
 
-  useEffect(() => {
-    const storedStudents = JSON.parse(localStorage.getItem('students')) || [];
-    setStudents(storedStudents);
+  const fetData=async ()=>{
+
+    const getStdata=await fetch("http://localhost:4000/student");
+
+    const data=await getStdata.json();
+
+      setStudents(data.user)
+  }
+
+  useEffect( () => {
+    
+    
+     fetData();
+
+    
+    
   }, []);
 
-  const handleDelete = (index) => {
-    const updatedStudents = students.filter((_, i) => i !== index);
-    setStudents(updatedStudents);
-    localStorage.setItem('students', JSON.stringify(updatedStudents));
-  };
 
-  const handleEdit = (index) => {
+  const handleDelete = async(_id) => {
+    
+    await fetch(`http://localhost:4000/delete/${_id}`,{
+        method:"DELETE",
+        headers:{
+          "content-Type":"application/json"
+        }
+      })
+
+    fetData();
+
+  };
+  
+
+  const handleEdit =async (_id) => {
+
+
     const studentName = prompt("Enter new name:");
     const studentRoll = prompt("Enter new roll number:");
     const studentClass = prompt("Enter new class:");
 
-    if (studentName && studentRoll && studentClass) {
-      const updatedStudents = students.map((student, i) => (
-        i === index ? { name: studentName, roll: studentRoll, class: studentClass } : student
-      ));
-      setStudents(updatedStudents);
-      localStorage.setItem('students', JSON.stringify(updatedStudents));
-    }
+   
+      await fetch(`http://localhost:4000/update/${_id}`,{
+        method:"PUT",
+        headers:{
+          "content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          name:studentName,
+          roll:studentRoll,
+          clas:studentClass
+        })
+      })
+
+    fetData();
+
+
   };
 
   return (
@@ -41,14 +74,14 @@ const StudentList = () => {
           </tr>
         </thead>
         <tbody>
-          {students.map((student, index) => (
-            <tr key={index}>
+          {students.map((student) => (
+            <tr key={student._id}>
               <td>{student.name}</td>
               <td>{student.roll}</td>
-              <td>{student.class}</td>
+              <td>{student.clas}</td>
               <td>
-                <button onClick={() => handleEdit(index)}>Edit</button>
-                <button onClick={() => handleDelete(index)}>Delete</button>
+                <button onClick={() => handleEdit(student._id)}>Edit</button>
+                <button  onClick={() => handleDelete(student._id)}>Delete</button>
               </td>
             </tr>
           ))}

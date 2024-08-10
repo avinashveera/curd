@@ -7,13 +7,14 @@ const StudentForm = ({ onSubmit }) => {
 
   const handleSubmit = (e) => {
     // e.preventDefault();
-    onSubmit({ name, roll, class: className });
+    onSubmit({ name, roll, clas: className });
     setName('');
     setRoll('');
     setClassName('');
   };
 
   return (
+    <>
     <form onSubmit={handleSubmit}>
       <div>
         <label>Name</label>
@@ -29,6 +30,9 @@ const StudentForm = ({ onSubmit }) => {
       </div>
       <button type="submit">Add Student</button>
     </form>
+    <a style={{textDecoration:"none",margin:"200px",padding:"10px",border:"1px solid green"}} href="http://localhost:3000/students">All students</a>
+</>
+
   );
 };
 
